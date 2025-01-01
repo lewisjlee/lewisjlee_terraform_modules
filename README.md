@@ -1,2 +1,2 @@
 # This is the repository for deployment and administration
-Repository for GitOps
+Repository for InfraOps
