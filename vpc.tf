@@ -74,6 +74,28 @@ resource "aws_subnet" "lewisjlee-was-2" {
   }
 }
 
+resource "aws_subnet" "lewisjlee-db-1" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.10.44.0/24"
+  map_public_ip_on_launch = "false"
+  availability_zone       = "${var.AWS_REGION}a"
+
+  tags = {
+    Name = "lewisjlee-was-1"
+  }
+}
+
+resource "aws_subnet" "lewisjlee-db-2" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.10.45.0/24"
+  map_public_ip_on_launch = "false"
+  availability_zone       = "${var.AWS_REGION}c"
+
+  tags = {
+    Name = "lewisjlee-was-2"
+  }
+}
+
 # Internet GW
 resource "aws_internet_gateway" "lewisjlee-gw" {
   vpc_id = aws_vpc.main.id

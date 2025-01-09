@@ -7,6 +7,11 @@ resource "aws_vpc_endpoint" "ec2" {
     aws_security_group.vpc-endpoint.id
   ]
 
+  subnet_ids = [
+    aws_subnet.lewisjlee-web-1.id,
+    aws_subnet.lewisjlee-web-2.id
+  ]
+
   private_dns_enabled = true
 }
 
@@ -17,6 +22,11 @@ resource "aws_vpc_endpoint" "ecr_api" {
 
   security_group_ids = [
     aws_security_group.vpc-endpoint.id
+  ]
+
+  subnet_ids = [
+    aws_subnet.lewisjlee-web-1.id,
+    aws_subnet.lewisjlee-web-2.id
   ]
 
   private_dns_enabled = true
@@ -33,20 +43,25 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
 
   subnet_ids = [
     aws_subnet.lewisjlee-web-1.id,
-    aws_subnet.lewisjlee-web-2.id,
+    aws_subnet.lewisjlee-web-2.id
   ]
 
   private_dns_enabled = true
 }
 
-#resource "aws_vpc_endpoint" "sts" {
-#  vpc_id            = aws_vpc.main.id
-#  service_name      = "com.amazonaws.ap-northeast-2.sts"
-#  vpc_endpoint_type = "Interface"
-#
-#  security_group_ids = [
-#    aws_security_group.vpc-endpoint.id
-#  ]
+resource "aws_vpc_endpoint" "rds" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.ap-northeast-2.rds"
+  vpc_endpoint_type = "Interface"
 
-#  private_dns_enabled = true
-#}
+  security_group_ids = [
+    aws_security_group.aurora-mysql-sg.id
+  ]
+
+  subnet_ids = [
+    aws_subnet.lewisjlee-was-1.id,
+    aws_subnet.lewisjlee-was-2.id
+  ]
+
+  private_dns_enabled = true
+}

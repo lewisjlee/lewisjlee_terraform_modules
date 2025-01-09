@@ -34,3 +34,9 @@ variable "web_subnets" {
 variable "was_subnets" {
   default = ["10.10.34.0/24", "10.10.35.0/24"]
 }
+
+locals {
+  db-parameters = {
+    max_allowed_packet  = "16777216"
+  }
+}
