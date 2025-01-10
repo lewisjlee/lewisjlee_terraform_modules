@@ -27,12 +27,8 @@ variable "public_subnets" {
   default = ["10.10.14.0/24", "10.10.15.0/24"]
 }
 
-variable "web_subnets" {
-  default = ["10.10.24.0/24", "10.10.25.0/24"]
-}
-
 variable "was_subnets" {
-  default = ["10.10.34.0/24", "10.10.35.0/24"]
+  default = ["10.10.24.0/24", "10.10.25.0/24"]
 }
 
 locals {

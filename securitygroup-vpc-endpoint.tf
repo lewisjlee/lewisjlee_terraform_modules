@@ -22,8 +22,6 @@ resource "aws_security_group_rule" "endpoint-ingress" {
   protocol                 = "tcp"
   security_group_id        = aws_security_group.vpc-endpoint.id
   cidr_blocks = [
-    aws_subnet.lewisjlee-web-1.cidr_block,
-    aws_subnet.lewisjlee-web-2.cidr_block,
     aws_subnet.lewisjlee-was-1.cidr_block,
     aws_subnet.lewisjlee-was-2.cidr_block
   ]

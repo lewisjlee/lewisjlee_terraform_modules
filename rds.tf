@@ -8,7 +8,9 @@ resource "aws_security_group" "aurora-mysql-sg" {
     protocol        = "tcp"
     cidr_blocks = [
     aws_subnet.lewisjlee-was-1.cidr_block,
-    aws_subnet.lewisjlee-was-2.cidr_block
+    aws_subnet.lewisjlee-was-2.cidr_block,
+    aws_subnet.lewisjlee-cache-1.cidr_block,
+    aws_subnet.lewisjlee-cache-2.cidr_block
     ]
   }
   egress {
@@ -19,7 +21,7 @@ resource "aws_security_group" "aurora-mysql-sg" {
     self        = true
   }
   tags = {
-    Name = "mariadb-sg"
+    Name = "aurora-mysql-sg"
   }
 }
 
@@ -41,20 +43,22 @@ resource "aws_rds_cluster_parameter_group" "default" {
   }
 }
 
-resource "aws_rds_cluster_instance" "primary" {
-  cluster_identifier    = aws_rds_cluster.lewisjlee-rds-cluster.id
-  identifier            = "database-primary"
-  engine                = "aurora-mysql"
-  instance_class        = "db.t3.medium"  
-  publicly_accessible   = false
+resource "aws_rds_cluster_instance" "cluster_instances" {
+  count              = 2
+  identifier         = "database-primary-${count.index}"
+  cluster_identifier = aws_rds_cluster.lewisjlee-rds-cluster.id
+  instance_class     = "db.t3.medium"
+  engine             = aws_rds_cluster.lewisjlee-rds-cluster.engine
+  engine_version     = aws_rds_cluster.lewisjlee-rds-cluster.engine_version
 }
 
-resource "aws_rds_cluster_instance" "secondary" {
-  cluster_identifier    = aws_rds_cluster.lewisjlee-rds-cluster.id
-  identifier            = "database-secondary"
-  engine                = "aurora-mysql"
-  instance_class        = "db.t3.medium"  
-  publicly_accessible   = false
+resource "aws_db_subnet_group" "rds-subnet-group" {
+  name       = "rds-subnet-group"
+  subnet_ids = [aws_subnet.lewisjlee-db-1.id, aws_subnet.lewisjlee-db-2.id]
+
+  tags = {
+    Name = "RDS subnet group"
+  }
 }
 
 resource "aws_rds_cluster" "lewisjlee-rds-cluster" {
@@ -64,9 +68,15 @@ resource "aws_rds_cluster" "lewisjlee-rds-cluster" {
   availability_zones      = ["${var.AWS_REGION}a", "${var.AWS_REGION}c"]
   database_name           = "lewisjlee"
   master_username = "lewisjlee"
-  master_password = "mysql1234"
+#  master_password = "mysql1234"
+  manage_master_user_password = true
   backup_retention_period = 5
   preferred_backup_window = "04:00-05:00"
+
+  db_subnet_group_name = aws_db_subnet_group.rds-subnet-group.name
+  vpc_security_group_ids = [
+    aws_security_group.aurora-mysql-sg.id
+  ]
 
   final_snapshot_identifier = "lewisjlee"
 }

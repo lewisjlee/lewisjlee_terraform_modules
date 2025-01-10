@@ -30,31 +30,9 @@ resource "aws_subnet" "lewisjlee-public-2" {
   }
 }
 
-resource "aws_subnet" "lewisjlee-web-1" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.10.24.0/24"
-  map_public_ip_on_launch = "false"
-  availability_zone       = "${var.AWS_REGION}a"
-
-  tags = {
-    Name = "lewisjlee-web-1"
-  }
-}
-
-resource "aws_subnet" "lewisjlee-web-2" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.10.25.0/24"
-  map_public_ip_on_launch = "false"
-  availability_zone       = "${var.AWS_REGION}c"
-
-  tags = {
-    Name = "lewisjlee-web-2"
-  }
-}
-
 resource "aws_subnet" "lewisjlee-was-1" {
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.10.34.0/24"
+  cidr_block              = "10.10.24.0/24"
   map_public_ip_on_launch = "false"
   availability_zone       = "${var.AWS_REGION}a"
 
@@ -63,14 +41,37 @@ resource "aws_subnet" "lewisjlee-was-1" {
   }
 }
 
+
 resource "aws_subnet" "lewisjlee-was-2" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.10.25.0/24"
+  map_public_ip_on_launch = "false"
+  availability_zone       = "${var.AWS_REGION}c"
+
+  tags = {
+    Name = "lewisjlee-was-2"
+  }
+}
+
+resource "aws_subnet" "lewisjlee-cache-1" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.10.34.0/24"
+  map_public_ip_on_launch = "false"
+  availability_zone       = "${var.AWS_REGION}a"
+
+  tags = {
+    Name = "lewisjlee-cache-1"
+  }
+}
+
+resource "aws_subnet" "lewisjlee-cache-2" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.10.35.0/24"
   map_public_ip_on_launch = "false"
   availability_zone       = "${var.AWS_REGION}c"
 
   tags = {
-    Name = "lewisjlee-was-2"
+    Name = "lewisjlee-cache-2"
   }
 }
 
@@ -81,7 +82,7 @@ resource "aws_subnet" "lewisjlee-db-1" {
   availability_zone       = "${var.AWS_REGION}a"
 
   tags = {
-    Name = "lewisjlee-was-1"
+    Name = "lewisjlee-db-1"
   }
 }
 
@@ -92,7 +93,7 @@ resource "aws_subnet" "lewisjlee-db-2" {
   availability_zone       = "${var.AWS_REGION}c"
 
   tags = {
-    Name = "lewisjlee-was-2"
+    Name = "lewisjlee-db-2"
   }
 }
 

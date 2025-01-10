@@ -6,8 +6,6 @@ resource "aws_eks_cluster" "cluster" {
     endpoint_private_access = true
     endpoint_public_access = true
     subnet_ids = [
-      aws_subnet.lewisjlee-web-1.id,
-      aws_subnet.lewisjlee-web-2.id,
       aws_subnet.lewisjlee-was-1.id,
       aws_subnet.lewisjlee-was-2.id
       ]
