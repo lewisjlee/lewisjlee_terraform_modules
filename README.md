@@ -1,2 +1,2 @@
-# This is the repository for deployment and administration
+# This is the repository for IaC Codes for Infrastructure
 Repository for InfraOps
