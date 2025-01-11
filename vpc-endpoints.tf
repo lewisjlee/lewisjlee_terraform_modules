@@ -48,20 +48,3 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
 
   private_dns_enabled = true
 }
-
-#resource "aws_vpc_endpoint" "rds" {
-#  vpc_id            = aws_vpc.main.id
-#  service_name      = "com.amazonaws.ap-northeast-2.rds"
-#  vpc_endpoint_type = "Interface"
-
-#  security_group_ids = [
-#    aws_security_group.aurora-mysql-sg.id
-#  ]
-
-#  subnet_ids = [
-#    aws_subnet.lewisjlee-was-1.id,
-#    aws_subnet.lewisjlee-was-2.id
-#  ]
-#
-#  private_dns_enabled = true
-#}

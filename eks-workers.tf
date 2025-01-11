@@ -26,6 +26,32 @@ resource "aws_eks_node_group" "was" {
     aws_iam_role_policy_attachment.eks-worker-role-AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.eks-worker-role-AmazonSSMManagedInstanceCore
   ]
+
+  provisioner "local-exec" {
+    command = local.kubeconfig
+  }
+
+  provisioner "local-exec" {
+    command = local.iamserviceaccount
+  }
+}
+
+locals {
+  kubeconfig = "aws eks update-kubeconfig --region ${var.AWS_REGION} --name ${aws_eks_cluster.cluster.name}"
+}
+
+locals {
+    iamserviceaccount = <<EOF
+
+    eksctl create iamserviceaccount \
+  --cluster=${var.cluster-name} \
+  --namespace=kube-system \
+  --name=aws-load-balancer-controller \
+  --role-name ${aws_iam_policy.aws_load_balancer_controller_policy.name} \
+  --attach-policy-arn=${aws_iam_policy.aws_load_balancer_controller_policy.arn} \
+  --approve
+
+  EOF
 }
 
 resource "aws_iam_role" "eks-worker-role" {

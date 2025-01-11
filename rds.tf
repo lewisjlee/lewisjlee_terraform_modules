@@ -44,8 +44,8 @@ resource "aws_rds_cluster_parameter_group" "default" {
 }
 
 resource "aws_rds_cluster_instance" "cluster_instances" {
-  count              = 2
-  identifier         = "database-primary-${count.index}"
+  for_each = var.db-suffix
+  identifier         = "database-${each.value}"
   cluster_identifier = aws_rds_cluster.lewisjlee-rds-cluster.id
   instance_class     = "db.t3.medium"
   engine             = aws_rds_cluster.lewisjlee-rds-cluster.engine
@@ -65,10 +65,9 @@ resource "aws_rds_cluster" "lewisjlee-rds-cluster" {
   cluster_identifier      = "lewisjlee"
   engine                  = data.aws_rds_engine_version.db-engine.engine
   engine_version          = data.aws_rds_engine_version.db-engine.version
-  availability_zones      = ["${var.AWS_REGION}a", "${var.AWS_REGION}c"]
+  availability_zones      = ["${var.AWS_REGION}a", "${var.AWS_REGION}b", "${var.AWS_REGION}c"]
   database_name           = "lewisjlee"
   master_username = "lewisjlee"
-#  master_password = "mysql1234"
   manage_master_user_password = true
   backup_retention_period = 5
   preferred_backup_window = "04:00-05:00"
@@ -78,6 +77,6 @@ resource "aws_rds_cluster" "lewisjlee-rds-cluster" {
     aws_security_group.aurora-mysql-sg.id
   ]
 
-  final_snapshot_identifier = "lewisjlee"
+  final_snapshot_identifier = "lewisjlee_${formatdate("YYYYMMDD_hhmm",timestamp())}"
 }
 

@@ -36,3 +36,11 @@ locals {
     max_allowed_packet  = "16777216"
   }
 }
+
+variable "db-suffix" {
+  type = map(string)
+  default = {
+    "primary" = "primary",
+    "secondary" = "secondary"
+  }
+}
