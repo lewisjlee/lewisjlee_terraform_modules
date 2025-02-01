@@ -50,6 +50,11 @@ resource "aws_rds_cluster_instance" "cluster_instances" {
   instance_class     = "db.t3.medium"
   engine             = aws_rds_cluster.lewisjlee-rds-cluster.engine
   engine_version     = aws_rds_cluster.lewisjlee-rds-cluster.engine_version
+  lifecycle {
+    ignore_changes = [
+      cluster_identifier
+    ]
+  }
 }
 
 resource "aws_db_subnet_group" "rds-subnet-group" {
@@ -65,7 +70,7 @@ resource "aws_rds_cluster" "lewisjlee-rds-cluster" {
   cluster_identifier      = "lewisjlee"
   engine                  = data.aws_rds_engine_version.db-engine.engine
   engine_version          = data.aws_rds_engine_version.db-engine.version
-  availability_zones      = ["${var.AWS_REGION}a", "${var.AWS_REGION}b", "${var.AWS_REGION}c"]
+  availability_zones      = ["${var.AWS_REGION}a", "${var.AWS_REGION}c"]
   database_name           = "lewisjlee"
   master_username = "lewisjlee"
   manage_master_user_password = true
@@ -77,6 +82,12 @@ resource "aws_rds_cluster" "lewisjlee-rds-cluster" {
     aws_security_group.aurora-mysql-sg.id
   ]
 
-  final_snapshot_identifier = "lewisjlee_${formatdate("YYYYMMDD_hhmm",timestamp())}"
+  lifecycle {
+    ignore_changes = [
+      availability_zones
+    ]
+  }
+
+  final_snapshot_identifier = "lewisjlee-${formatdate("YYYYMMDD-hhmm",timestamp())}"
 }
 

@@ -14,6 +14,6 @@ output "cluster_name" {
 }
 
 output "identity" {
-  description = "Kubernetes Cluster Name"
+  description = "Kubernetes Cluster Identity"
   value       = aws_eks_cluster.cluster.identity
 }
