@@ -1,11 +1,11 @@
-resource "aws_eks_node_group" "web" {
+resource "aws_eks_node_group" "eks-node-group" {
   cluster_name    = aws_eks_cluster.cluster.name
-  node_group_name = "web-tier"
+  node_group_name = "eks-node-group"
   node_role_arn   = aws_iam_role.eks-worker-role.arn
   instance_types  = ["t3.small"]
   subnet_ids = [
-    aws_subnet.lewisjlee-web-1.id,
-    aws_subnet.lewisjlee-web-2.id
+    aws_subnet.lewisjlee-nodes-1.id,
+    aws_subnet.lewisjlee-nodes-2.id
   ]
 
   scaling_config {
@@ -25,33 +25,6 @@ resource "aws_eks_node_group" "web" {
     aws_iam_role_policy_attachment.eks-worker-role-AmazonEKS_CNI_Policy,
     aws_iam_role_policy_attachment.eks-worker-role-AmazonEC2ContainerRegistryReadOnly,
     aws_iam_role_policy_attachment.eks-worker-role-AmazonSSMManagedInstanceCore
-  ]
-}
-
-resource "aws_eks_node_group" "was" {
-  cluster_name    = aws_eks_cluster.cluster.name
-  node_group_name = "was-tier"
-  node_role_arn   = aws_iam_role.eks-worker-role.arn
-  instance_types  = ["t3.small"]
-  subnet_ids = [
-    aws_subnet.lewisjlee-was-1.id,
-    aws_subnet.lewisjlee-was-2.id
-  ]
-
-  scaling_config {
-    desired_size = 2
-    max_size     = 5
-    min_size     = 2
-  }
-
-  lifecycle {
-    ignore_changes = [
-      scaling_config[0].desired_size
-    ]
-  }
-
-  depends_on = [
-    aws_eks_node_group.web
   ]
 
   provisioner "local-exec" {

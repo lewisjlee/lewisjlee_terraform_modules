@@ -7,8 +7,8 @@ resource "aws_security_group" "cache-redis-sg" {
     to_port         = 6379
     protocol        = "tcp"
     cidr_blocks = [
-    aws_subnet.lewisjlee-was-1.cidr_block,
-    aws_subnet.lewisjlee-was-2.cidr_block,
+    aws_subnet.lewisjlee-nodes-1.cidr_block,
+    aws_subnet.lewisjlee-nodes-2.cidr_block,
     ]
   }
   egress {

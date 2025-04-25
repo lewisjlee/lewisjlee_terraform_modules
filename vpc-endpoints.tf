@@ -8,8 +8,8 @@ resource "aws_vpc_endpoint" "ec2" {
   ]
 
   subnet_ids = [
-    aws_subnet.lewisjlee-was-1.id,
-    aws_subnet.lewisjlee-was-2.id
+    aws_subnet.lewisjlee-nodes-1.id,
+    aws_subnet.lewisjlee-nodes-2.id
   ]
 
   private_dns_enabled = true
@@ -25,8 +25,8 @@ resource "aws_vpc_endpoint" "ecr_api" {
   ]
 
   subnet_ids = [
-    aws_subnet.lewisjlee-was-1.id,
-    aws_subnet.lewisjlee-was-2.id
+    aws_subnet.lewisjlee-nodes-1.id,
+    aws_subnet.lewisjlee-nodes-2.id
   ]
 
   private_dns_enabled = true
@@ -42,8 +42,8 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   ]
 
   subnet_ids = [
-    aws_subnet.lewisjlee-was-1.id,
-    aws_subnet.lewisjlee-was-2.id
+    aws_subnet.lewisjlee-nodes-1.id,
+    aws_subnet.lewisjlee-nodes-2.id
   ]
 
   private_dns_enabled = true
