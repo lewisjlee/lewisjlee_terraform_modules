@@ -1,3 +1,4 @@
 resource "aws_ecr_repository" "ecr_repository" {
-  name = var.SERVICE_NAME
+  count = var.ENVIRONMENT == "prod" ? 1 : 0
+  name  = var.SERVICE_NAME
 }
