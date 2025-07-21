@@ -144,46 +144,77 @@ resource "aws_route_table_association" "public_2_a" {
 }
 
 # NAT Gateway용 EIP
-resource "aws_eip" "nat" {
+resource "aws_eip" "nat_1" {
   depends_on = [aws_internet_gateway.igw]
   tags = {
-    Name = "${var.SERVICE_NAME}_nat_eip_${var.ENVIRONMENT}"
+    Name = "${var.SERVICE_NAME}_nat_eip_1_${var.ENVIRONMENT}"
+  }
+}
+
+resource "aws_eip" "nat_2" {
+  depends_on = [aws_internet_gateway.igw]
+  tags = {
+    Name = "${var.SERVICE_NAME}_nat_eip_2_${var.ENVIRONMENT}"
   }
 }
 
 # NAT Gateway
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat.id
+resource "aws_nat_gateway" "nat_1" {
+  allocation_id = aws_eip.nat_1.id
   subnet_id     = aws_subnet.public_subnet_1.id
   depends_on    = [aws_internet_gateway.igw]
   tags = {
-    Name = "${var.SERVICE_NAME}_nat_${var.ENVIRONMENT}"
+    Name = "${var.SERVICE_NAME}_nat_1_${var.ENVIRONMENT}"
+  }
+}
+
+resource "aws_nat_gateway" "nat_2" {
+  allocation_id = aws_eip.nat_2.id
+  subnet_id     = aws_subnet.public_subnet_2.id
+  depends_on    = [aws_internet_gateway.igw]
+  tags = {
+    Name = "${var.SERVICE_NAME}_nat_2_${var.ENVIRONMENT}"
   }
 }
 
 # nodes_subnet용 라우팅 테이블
-resource "aws_route_table" "nodes_rt" {
+resource "aws_route_table" "nodes_rt_1" {
   vpc_id = aws_vpc.main.id
   route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat.id
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_1.id
   }
   route {
     cidr_block = var.vpc_cidr_block
     gateway_id = "local"
   }
   tags = {
-    Name = "${var.SERVICE_NAME}_nodes_rt_${var.ENVIRONMENT}"
+    Name = "${var.SERVICE_NAME}_nodes_rt_1_${var.ENVIRONMENT}"
+  }
+}
+
+resource "aws_route_table" "nodes_rt_2" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_2.id
+  }
+  route {
+    cidr_block = var.vpc_cidr_block
+    gateway_id = "local"
+  }
+  tags = {
+    Name = "${var.SERVICE_NAME}_nodes_rt_2_${var.ENVIRONMENT}"
   }
 }
 
 # nodes_subnet 라우팅 테이블 연결
 resource "aws_route_table_association" "nodes_1_a" {
   subnet_id      = aws_subnet.nodes_subnet_1.id
-  route_table_id = aws_route_table.nodes_rt.id
+  route_table_id = aws_route_table.nodes_rt_1.id
 }
 
 resource "aws_route_table_association" "nodes_2_a" {
   subnet_id      = aws_subnet.nodes_subnet_2.id
-  route_table_id = aws_route_table.nodes_rt.id
+  route_table_id = aws_route_table.nodes_rt_2.id
 }
