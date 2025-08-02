@@ -22,19 +22,9 @@ resource "aws_dynamodb_table" "main" {
     }
   }
 
-  dynamic "read_capacity" {
-    for_each = var.dynamodb_billing_mode == "PROVISIONED" ? [1] : []
-    content {
-      read_capacity = var.dynamodb_read_capacity
-    }
-  }
-
-  dynamic "write_capacity" {
-    for_each = var.dynamodb_billing_mode == "PROVISIONED" ? [1] : []
-    content {
-      write_capacity = var.dynamodb_write_capacity
-    }
-  }
+  # PROVISIONED 모드일 때만 read_capacity와 write_capacity 설정
+  read_capacity  = var.dynamodb_billing_mode == "PROVISIONED" ? var.dynamodb_read_capacity : null
+  write_capacity = var.dynamodb_billing_mode == "PROVISIONED" ? var.dynamodb_write_capacity : null
 
   point_in_time_recovery {
     enabled = var.dynamodb_enable_point_in_time_recovery
