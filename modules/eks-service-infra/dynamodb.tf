@@ -79,5 +79,5 @@ resource "aws_iam_policy" "dynamodb_access" {
 # EKS 노드 그룹에 DynamoDB 접근 권한 부여
 resource "aws_iam_role_policy_attachment" "eks_node_dynamodb" {
   policy_arn = aws_iam_policy.dynamodb_access.arn
-  role       = aws_iam_role.eks_node_group.name
+  role       = aws_iam_role.eks_worker_role.name
 } 
