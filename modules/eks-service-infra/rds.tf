@@ -5,8 +5,8 @@ locals {
 }
 
 data "aws_rds_engine_version" "db_engine" {
-  engine             = "aurora-mysql"
-  latest = true
+  engine  = "aurora-mysql"
+  version = "8.0.mysql_aurora.3.07.1"
 }
 
 resource "aws_security_group" "aurora_mysql_sg" {
@@ -36,16 +36,17 @@ resource "aws_security_group" "aurora_mysql_sg" {
   }
 }
 
-resource "aws_rds_cluster_parameter_group" "default" {
+resource "aws_db_parameter_group" "default" {
   name        = "${var.SERVICE_NAME}-rds-cluster-pg-${var.ENVIRONMENT}"
-  family      = "aurora5.6"
+  family      = "aurora-mysql8.0"
   description = "RDS default cluster parameter group"
 
-  for_each = local.db_parameters
-
-  parameter {
-    name  = each.key
-    value = each.value
+  dynamic "parameter" {
+    for_each = local.db_parameters
+    content {
+      name  = parameter.key
+      value = parameter.value
+    }
   }
 }
 
@@ -56,6 +57,7 @@ resource "aws_rds_cluster_instance" "cluster_instances" {
   instance_class     = "db.t3.medium"
   engine             = aws_rds_cluster.rds_cluster.engine
   engine_version     = aws_rds_cluster.rds_cluster.engine_version
+  db_parameter_group_name = aws_db_parameter_group.default.name
   lifecycle {
     ignore_changes = [
       cluster_identifier
